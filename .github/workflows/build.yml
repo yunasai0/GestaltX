@@ -49,7 +49,10 @@ jobs:
       - name: Select Xcode
         uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: latest-stable
+          xcode-version: latest
+
+      - name: List Xcode
+        run: ls -d /Applications/Xcode*; xcodebuild -version
 
       - name: Use the current build script for old tags
         # Tags made before this workflow existed have no build script.
