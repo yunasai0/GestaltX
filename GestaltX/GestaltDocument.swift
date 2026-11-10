@@ -233,8 +233,10 @@ struct DocumentSnapshot: @unchecked Sendable {
 
     func originalCachedOptionFlags() throws -> CachedOptionFlags {
         if let cachedOptionsOriginal { return try cachedOptionsOriginal.flags(in: document) }
-        // No history means the loaded values are the baseline, not a guessed restriction.
-        return try DeviceCacheOptions.flags(in: document)
+        let current = try DeviceCacheOptions.flags(in: document)
+        // Mainland China hardware ships restricted; without history, restore that factory state.
+        let salesSuffix = [GestaltKeys.regionInfo, GestaltKeys.legacyRegionInfo].lazy.compactMap { document.extra[$0] as? String }.first
+        return salesSuffix == "CH/A" ? .restricted : current
     }
 
     func recordingOriginals(to edited: GestaltDocument) -> OriginalValues {
